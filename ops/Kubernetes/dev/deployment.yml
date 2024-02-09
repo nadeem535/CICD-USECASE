@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pythondemoapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pythondemoapp
+  template:
+    metadata:
+      labels:
+        app: pythondemoapp
+    spec:
+      containers:
+      - name: pythondemoapp
+        image: asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}
+        ports:
+        - containerPort: 9090
