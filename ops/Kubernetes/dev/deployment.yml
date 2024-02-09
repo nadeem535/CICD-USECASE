@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: pythondemoapp
-        image: asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}
+        image: asia-south1-docker.pkg.dev/planar-sun-412213/nadeem-cicd-usecase-dev-repo/pythondemoimage:${imageTag}
         ports:
         - containerPort: 9090

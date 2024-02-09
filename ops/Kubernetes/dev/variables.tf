@@ -5,7 +5,7 @@ variable "location" {
 
 variable "name" {
   type    = string
-  default = "demo-dev-cloudrun-service"
+  default = "demo-dev-GKE-service"
 }
 variable "image_digest" {
   type    = string

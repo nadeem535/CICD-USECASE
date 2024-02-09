@@ -9,16 +9,16 @@ terraform {
 }
 terraform {
   backend "gcs" {
-    bucket = "anil-terraform-statefiles" # GCS bucket name to store terraform tfstate
-    prefix = "cicd-demo/dev/Kubernetes"               # Prefix name should be unique for each Terraform project having same remote state bucket.
+    bucket = "nadeem-terraform-statefiles" # GCS bucket name to store terraform tfstate
+    prefix = "cicd-usecase/dev/Kubernetes"               # Prefix name should be unique for each Terraform project having same remote state bucket.
   }
 }
 provider "google" {
-  project = "excellent-guide-410011"
+  project = "	planar-sun-412213"
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "anil-demo-gke-cluster"
+  name     = "nadeem-usecase-gke-cluster"
   location = "asia-south1"
 
   # We can't create a cluster with no node pool defined, but we want to only use
