@@ -11,16 +11,16 @@ pipeline {
         stage('Non Prod Infra : Creation') {
             when {
                 anyOf {
-                    branch 'develop'
+                    branch 'dev'
                     branch 'test'
                 }
             }
             steps {
                 script {
                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                    sh 'gcloud config set project excellent-guide-410011'
+                    sh 'gcloud config set project planar-sun-412213'
 
-                    if (env.BRANCH_NAME == 'develop') {
+                    if (env.BRANCH_NAME == 'dev') {
                         dir("ops/ArtifactRegistry/dev") {
                             sh 'terraform --version'
                             sh 'terraform init'
