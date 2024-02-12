@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('anilgcpcredentials')
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('Nadeemservice-account')
     }
 
     stages {
@@ -42,16 +42,16 @@ pipeline {
         stage('Non Prod code build and docker image Creation') {
             when {
                 anyOf {
-                    branch 'develop'
+                    branch 'dev'
                     branch 'test'
                 }
             }
             steps {
                 script {
                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                    sh 'gcloud config set project excellent-guide-410011'
+                    sh 'gcloud config set project planar-sun-412213'
 
-                    if (env.BRANCH_NAME == 'develop') {
+                    if (env.BRANCH_NAME == 'dev') {
                         dir("ops/src/dev") {
                             sh 'echo running dev build docker image'
                             sh 'docker version'
@@ -59,8 +59,8 @@ pipeline {
                             sh 'docker images'
                             imageTag = "latest-${env.BUILD_NUMBER}" // or use a timestamp or commit hash
                             sh "docker build -t pythondemoimage:${imageTag} ."
-                            sh "docker tag pythondemoimage:${imageTag} asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}"
-                            sh "docker push asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}"
+                            sh "docker tag pythondemoimage:${imageTag} asia-south1-docker.pkg.dev/planar-sun-412213/nadeem-cicd-usecase-dev-repo/pythondemoimage:${imageTag}"
+                            sh "docker push asia-south1-docker.pkg.dev/planar-sun-412213/nadeem-cicd-usecase-dev-repo/pythondemoimage:${imageTag}"
                             sh 'gcloud auth configure-docker asia-south1-docker.pkg.dev'
                             sh 'docker images'
                         }
@@ -84,18 +84,18 @@ pipeline {
         stage('Non Prod service Creation and deployment') {
             when {
                 anyOf {
-                    branch 'develop'
+                    branch 'dev'
                     branch 'test'
                 }
             }
             steps {
                 script {
                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                    sh 'gcloud config set project excellent-guide-410011'
+                    sh 'gcloud config set project planar-sun-412213'
 
-                    if (env.BRANCH_NAME == 'develop') {
+                    if (env.BRANCH_NAME == 'dev') {
                         dir("ops/CloudRunService/dev") {
-                            sh "sed -i 's|asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:\${imageTag}|asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}|' main.tf"
+                            sh "sed -i 's|asia-south1-docker.pkg.dev/planar-sun-412213/nadeem-cicd-usecase-dev-repo/pythondemoimage:\${imageTag}|asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}|' main.tf"
                             sh 'terraform --version'
                             sh 'terraform init'
                             sh 'terraform plan -out=output.tfplan'
@@ -107,10 +107,10 @@ pipeline {
                             sh 'terraform plan -out=output.tfplan'
                             sh 'terraform apply -auto-approve'
 
-                            sh 'gcloud config set project excellent-guide-410011'
+                            sh 'gcloud config set project planar-sun-412213'
                             sh 'kubectl config view'
-                            sh 'gcloud container clusters get-credentials anil-demo-gke-cluster --region asia-south1 --project excellent-guide-410011'
-                            sh "sed -i 's|asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:\${imageTag}|asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}|' deployment.yml"
+                            sh 'gcloud container clusters get-credentials nadeem-usecase-gke-cluster --region asia-south1 --project planar-sun-412213'
+                            sh "sed -i 's|asia-south1-docker.pkg.dev/planar-sun-412213/nadeem-cicd-usecase-dev-repo/pythondemoimage:\${imageTag}|asia-south1-docker.pkg.dev/excellent-guide-410011/anil-cicd-demo-dev-repo/pythondemoimage:${imageTag}|' deployment.yml"
                             sh 'kubectl apply -f deployment.yml'
                             sh 'kubectl apply -f service.yml'
                         }
@@ -133,7 +133,7 @@ pipeline {
             steps {
                 script {
                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                    sh 'gcloud config set project excellent-guide-410011'
+                    sh 'gcloud config set project planar-sun-412213'
 
                     if (env.BRANCH_NAME == 'main') {
                         dir("ops/ArtifactRegistry/prod") {
